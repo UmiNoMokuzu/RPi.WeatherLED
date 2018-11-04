@@ -40,31 +40,31 @@ if __name__ == '__main__':
         while True:
         weather = get_livedoor_wh_api("270000")
 
-            if re.search("晴.*", weather):
-                gpio.output(13, gpio.HIGH)
-            else:
-                gpio.output(13, gpio.LOW)
+            if re.search("[晴|曇|雨|雪].*", weather)
+                if re.search("晴.*", weather):
+                    gpio.output(13, gpio.HIGH)
+                else:
+                    gpio.output(13, gpio.LOW)
 
-            if re.search("曇.*", weather):
-                gpio.output(19, gpio.HIGH)
-            else:
-                gpio.output(19, gpio.LOW)
+                if re.search("曇.*", weather):
+                    gpio.output(19, gpio.HIGH)
+                else:
+                    gpio.output(19, gpio.LOW)
 
-            if re.search("雨.*", weather):
-                gpio.output(26, gpio.HIGH)
-            else:
-                gpio.output(26, gpio.LOW)
+                if re.search("雨.*", weather):
+                    gpio.output(26, gpio.HIGH)
+                else:
+                    gpio.output(26, gpio.LOW)
 
-            if re.search("雪.*", weather):
-                gpio.output(21, gpio.HIGH)
-            else:
-                gpio.output(21, gpio.LOW)
+                if re.search("雪.*", weather):
+                    gpio.output(21, gpio.HIGH)
+                else:
+                    gpio.output(21, gpio.LOW)
            
             # 通信異常等で天気が正常受信できない場合は
             # 全LEDを1.0sec間隔で点滅させる
             err_blink_count = 0
-
-            if re.search("[^晴|曇|雨|雪].*", weather):
+            else:
                while True:
 
                    # 指定秒数経過したらエラー通知点滅OFF
