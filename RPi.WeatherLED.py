@@ -59,14 +59,15 @@ if __name__ == '__main__':
                 gpio.output(21, gpio.HIGH)
             else:
                 gpio.output(21, gpio.LOW)
-                # 通信異常等で天気が正常受信できない場合は
+           
+            # 通信異常等で天気が正常受信できない場合は
             # 全LEDを1.0sec間隔で点滅させる
             err_blink_count = 0
 
             if re.search("[^晴|曇|雨|雪].*", weather):
                while True:
 
-                   # エラー通知点滅OFF
+                   # 指定秒数経過したらエラー通知点滅OFF
                    if err_blink_count == err_blink_interval:
                        break
 
