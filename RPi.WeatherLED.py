@@ -79,25 +79,6 @@ if __name__ == '__main__':
                    
                    time.sleep(0.5)
                    
-                   # 全LEDを1.0sec間隔で点滅させる
-            err_blink_count = 0
-
-            if re.search("[^晴|曇|雨|雪].*", weather):
-               while True:
-
-                   # エラー通知点滅OFF
-                   if err_blink_count == err_blink_interval:
-                       break
-
-                   time.sleep(0.5)
-
-                   gpio.output(13, gpio.HIGH)
-                   gpio.output(19, gpio.HIGH)
-                   gpio.output(21, gpio.HIGH)
-                   gpio.output(26, gpio.HIGH)
-
-                   time.sleep(0.5)
-
                    gpio.output(13, gpio.LOW)
                    gpio.output(19, gpio.LOW)
                    gpio.output(21, gpio.LOW)
