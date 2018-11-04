@@ -105,8 +105,8 @@ if __name__ == '__main__':
 
                    err_blink_count = err_blink_count + 1
 
-            # 300sec待ってからAPIへリクエストする
-            time.sleep(300)
+            # 指定秒数待ってからAPIへリクエストする
+            time.sleep(receve_interval)
 
     except KeyboardInterrupt:
         gpio.cleanup()
