@@ -12,11 +12,14 @@ gpio.setwarnings(False)
 gpio.setmode(gpio.BCM)
 
 gpio.setup(26, gpio.OUT) # blue   -> Rainy
+gpio.setup(21, gpio.OUT) # green  -> Snowy
 gpio.setup(19, gpio.OUT) # whilte -> Cloudy
 gpio.setup(13, gpio.OUT) # orange -> Sunny
 
-# WebAPI URL
-base_url  = "http://weather.livedoor.com/forecast/webservice/json/v1"
+# WebAPI 設定
+base_url           = "http://weather.livedoor.com/forecast/webservice/json/v1"
+receive_interval   = 300                   # sec
+err_blink_interval = receive_interval - 2  # sec
 
 # +----------------------------------------------------------------------------+
 # | Livedoor Weather Web Service / LWWS                                        |
@@ -33,12 +36,9 @@ def get_livedoor_wh_api(area_code):
 # | Main                                                                       |
 # +----------------------------------------------------------------------------+
 if __name__ == '__main__':
-
     try:
         while True:
-            weather = get_livedoor_wh_api("270000")
-
-            print(weather)
+        weather = get_livedoor_wh_api("270000")
 
             if re.search("晴.*", weather):
                 gpio.output(13, gpio.HIGH)
@@ -55,7 +55,57 @@ if __name__ == '__main__':
             else:
                 gpio.output(26, gpio.LOW)
 
-            # interval 300sec(5min)
+            if re.search("雪.*", weather):
+                gpio.output(21, gpio.HIGH)
+            else:
+                gpio.output(21, gpio.LOW)
+                # 通信異常等で天気が正常受信できない場合は
+            # 全LEDを1.0sec間隔で点滅させる
+            err_blink_count = 0
+
+            if re.search("[^晴|曇|雨|雪].*", weather):
+               while True:
+
+                   # エラー通知点滅OFF
+                   if err_blink_count == err_blink_interval:
+                       break
+
+                   time.sleep(0.5)
+
+                   gpio.output(13, gpio.HIGH)
+                   gpio.output(19, gpio.HIGH)
+                   gpio.output(21, gpio.HIGH)
+                   gpio.output(26, gpio.HIGH)
+                   
+                   time.sleep(0.5)
+                   
+                   # 全LEDを1.0sec間隔で点滅させる
+            err_blink_count = 0
+
+            if re.search("[^晴|曇|雨|雪].*", weather):
+               while True:
+
+                   # エラー通知点滅OFF
+                   if err_blink_count == err_blink_interval:
+                       break
+
+                   time.sleep(0.5)
+
+                   gpio.output(13, gpio.HIGH)
+                   gpio.output(19, gpio.HIGH)
+                   gpio.output(21, gpio.HIGH)
+                   gpio.output(26, gpio.HIGH)
+
+                   time.sleep(0.5)
+
+                   gpio.output(13, gpio.LOW)
+                   gpio.output(19, gpio.LOW)
+                   gpio.output(21, gpio.LOW)
+                   gpio.output(26, gpio.LOW)
+
+                   err_blink_count = err_blink_count + 1
+
+            # 300sec待ってからAPIへリクエストする
             time.sleep(300)
 
     except KeyboardInterrupt:
